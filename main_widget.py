@@ -97,7 +97,8 @@ class MainWidget(QWidget, Ui_Form):
             # self._time = 0
         for i, p in enumerate(self._plots):
             self._x[i].append(self._time / 1000)
-            self._y[i].append(np.random.randint(i*10, (i+1)*10, size=1)[0])
+            # self._y[i].append(np.random.randint(i*10, (i+1)*10, size=1)[0])
+            self._y[i].append(np.random.randint(1, 10, size=1)[0])
             p.setData(x=self._x[i], y=self._y[i])
         self._time += self._interval
 
