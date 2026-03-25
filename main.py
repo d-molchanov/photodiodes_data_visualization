@@ -16,7 +16,7 @@ def main():
     app = QApplication(sys.argv)
     app.setStyle(QStyleFactory.create('Fusion'))
     window = MainWindow()
-    window.resize(800, 400)
+    window.resize(1000, 800)
     main_widget = MainWidget()
     # window.stop_worker.connect(main_widget.slot_stop_worker)
     window.setCentralWidget(main_widget)

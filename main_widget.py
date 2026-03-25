@@ -31,8 +31,11 @@ class MainWidget(QWidget, Ui_Form):
         self._p1.setPen((255, 0, 0))
         self._p2 = self.plotWidget.plot()
         self._p2.setPen((150, 0, 0))
+        self.plotWidget.setXRange(0, 1)
+        self.plotWidget.setYRange(0, 2000)
+
         self._timer = QTimer()
-        self._interval = 100
+        self._interval = 10
         self._time = 0
         self._x = []
         self._y = []
@@ -43,7 +46,7 @@ class MainWidget(QWidget, Ui_Form):
         self._plots_old = []
         self._create_curves()
         self._connect_signals()
-
+        self._window_size = 1000 / self._interval
         self._ts = None
         
     def _create_curves(self):
@@ -76,13 +79,21 @@ class MainWidget(QWidget, Ui_Form):
         self._timer.timeout.connect(self._plot_data)
 
     def _plot_data(self):
-        if self._time % (self._interval * 20) == 0:
+        if self._time > 1000:
+        # if self._time % (self._interval * self._window_size) == 0:
             ts = time.perf_counter()
+            # for i, p in enumerate(self._plots):
+            #     p.setData(x=self._x[i], y=self._y[i])
+
             print(ts - self._ts)
             self._ts = ts
-            x = deepcopy(self._x)
-            for i, row in enumerate(x):
-                self._x_old[i] = [el + self._interval*20 / 1000 for el in row]
+            # x = deepcopy(self._x)
+            # for i, row in enumerate(x):
+            #     self._x_old[i] = [
+            #         el + self._interval*self._window_size / 1000 for
+            #         el in row
+            #     ]
+            self._x_old = deepcopy(self._x)
             self._y_old = deepcopy(self._y)
             self._x = []
             self._y = []
@@ -94,13 +105,30 @@ class MainWidget(QWidget, Ui_Form):
                 p_old.setData(x=x_old, y=y_old)
                 self._x.append([])
                 self._y.append([])
-            # self._time = 0
+            self._time = 0
         for i, p in enumerate(self._plots):
             self._x[i].append(self._time / 1000)
             # self._y[i].append(np.random.randint(i*10, (i+1)*10, size=1)[0])
-            self._y[i].append(np.random.randint(1, 10, size=1)[0])
+            self._y[i].append(np.random.randint(1500, 1800, size=1)[0])
             p.setData(x=self._x[i], y=self._y[i])
         self._time += self._interval
+
+    def _plot_data_test(self):
+        if self._time > 1000:
+            ts = time.perf_counter()
+            print(ts - self._ts)
+            self._ts = ts
+            self._time = 0
+        self._time += self._interval
+
+    # def _instant_plot_data(self):
+    #     if self._time % (self._interval * self._window_size) == 0:
+    #         ts = time.perf_counter()
+    #         print(ts - self._ts)
+    #         self._ts = ts
+    #     for i, p in enumerate(self._plots):
+        
+    #     self._time += self._interval
 
 
     def _start_plotting(self):
